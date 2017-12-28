@@ -1,0 +1,136 @@
+import java.io.*;
+import java.util.HashMap;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.ArrayList;
+
+
+public class Mainer {
+	
+	///// ENTRY POINT /////
+	public static void main (String[] args){
+
+		////////////////////////////////////////
+		///// WE START BY HASHING THE FILE /////
+		////////////////////////////////////////
+		HashMap<Character, HashNode> map = new HashMap<>();
+
+		// we start by reading in the file
+		String file = args[0];
+		String line;
+		
+		// we try reading in this file name
+		try{
+			// create stuff to read in file
+			FileReader fileReader = new FileReader(file);
+			BufferedReader bufferedReader = new BufferedReader(fileReader);
+			
+			// we store the string as a char array
+			char[] arrayString;
+
+			System.out.println("Main Check #1");
+			
+			// cycle through line by line and input into the hashmap
+			while ((line = bufferedReader.readLine()) != null){
+
+				System.out.println("Main Check #2");
+				
+				arrayString = line.toCharArray();
+				//System.out.println(Arrays.toString(arrayString));
+				
+				// cycle through the line
+				for (int i = 0; i < arrayString.length; ++i){
+
+					// System.out.println("Main Check #3: " + arrayString[i]);
+					
+					if (map.containsKey(arrayString[i]))
+						map.get(arrayString[i]).increaseFrequency();
+					
+					else if (arrayString[i] != ' ')
+						map.put(arrayString[i], new HashNode(arrayString[i], 1));
+			
+				}// end of for loop
+				
+			}
+			
+		}
+		catch(IOException e){
+			 System.err.println("Caught IOException: " + e.getMessage());
+		}
+
+		// we check that the map has worked properly
+		// System.out.println("Check #3: ")
+		//printMap(map);
+
+
+
+		////////////////////////////////////////
+		/////// WE PUSH NODES TO THE HEAP //////
+		////////////////////////////////////////
+		PriorityQueue<HashNode> heap = new PriorityQueue<>(map.size());
+
+		for (Map.Entry<Character, HashNode> entry : map.entrySet()){
+    		heap.add(entry.getValue())
+		}
+
+
+		////////////////////////////////////////
+		/////// WE POP TOP TWO AND MAKE NEW ////
+		////////////////////////////////////////
+
+		while (heap.size() > 1){
+
+			// we pop the top two elements
+			HashNode tmp1 = heap.poll();
+			HashNode tmp2 = heap.poll();
+
+			// evaluate their sum
+			int frequencySum = tmp1.returnFrequency() + tmp2.returnFrequency();
+
+			// input new node that has these two as children
+			heap.offer(new HashNode(frequencySum, tmp1, tmp2));
+
+		}
+
+		////////////////////////////////////////
+		// WE WORK WITH THE RESULTING HTREE ////
+		////////////////////////////////////////
+		HashNode root = heap.poll();
+        ArrayList<Integer> codes = new ArrayList<>();
+
+        printCodes(root, codes, 0);
+
+
+
+
+	}// end of main
+
+
+	//// WE DEFINE AUXILLIARY STATICS /////
+
+	// method to print out the hashmap
+	public static void printMap(Map<Character, HashNode> map) {
+
+		System.out.println("Check #1");
+
+		for (Map.Entry<Character, HashNode> entry : map.entrySet()){
+    		System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue().frequency);
+    		System.out.println("Check #2");
+		}
+		
+	}
+
+    public static void printCodes(HashNode root, ArrayList<Integer> codes, int top){
+
+        if (!root.isLeaf()){
+
+            codes.add(top, new Integer(0));
+            printCodes(root.)        
+
+        }
+
+    }
+
+
+}
+
